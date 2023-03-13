@@ -61,7 +61,7 @@
 import axios from "axios";
 import CardComponent from "./components/CardComponent.vue";
 import InfiniteLoading from "vue-infinite-loading";
-import DeletePopup from "../../new-app/src/components/DeletePopup.vue";
+import DeletePopup from "@/components/DeletePopup.vue";
 
 // const api = `http://localhost:5000/comments?page=${this.page}&limit=${10}`;
 
@@ -116,9 +116,11 @@ export default {
       this.loading = true;
       await axios.delete("http://localhost:5000/comments/" + _id);
       // this.items.splice(this.items.indexOf())
-      this.items = this.items.filter((ele)=> {
+      let arrFromDel = this.filteredItems.length ? this.filteredItems : this.items
+      let newData = arrFromDel.filter((ele)=> {
         return ele._id !== _id;
-      })
+      });
+      this.filteredItems.length ? this.filteredItems = newData : this.items = newData;
       this.loading = false;
       this.loading ? (this.deletePop = true) : (this.deletePop = false);
     },
@@ -129,7 +131,8 @@ export default {
     async editItem(_id, item) {
       this.loading = true;
       await axios.put("http://localhost:5000/comments/" + _id, item);
-      this.items.filter((ele) => {
+      let arrEdit = this.filteredItems.length ? this.filteredItems : this.items;
+      let newData = arrEdit.filter((ele) => {
         if (ele._id === _id) {
           ele.name = item.name;
           ele.email = item.email;
@@ -137,6 +140,7 @@ export default {
         }
       });
       this.loading = false;
+      this.filteredData.length ? this.filteredItems = newData : this.items = newData;
     },
   },
 };
